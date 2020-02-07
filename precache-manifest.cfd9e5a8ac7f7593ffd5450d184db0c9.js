@@ -1,10 +1,10 @@
 self.__precacheManifest = (self.__precacheManifest || []).concat([
   {
-    "revision": "6d31f09befcc1d0fb2875d39e2795cac",
+    "revision": "387b00b8d79ebaf1b0915378413b4afe",
     "url": "/myfailemtions/movieology-pwa/index.html"
   },
   {
-    "revision": "dc5c580438554fd0bdd5",
+    "revision": "7ef0d66c8eb4b89088c0",
     "url": "/myfailemtions/movieology-pwa/static/css/2.73d444c6.chunk.css"
   },
   {
@@ -12,12 +12,12 @@ self.__precacheManifest = (self.__precacheManifest || []).concat([
     "url": "/myfailemtions/movieology-pwa/static/css/main.812c523a.chunk.css"
   },
   {
-    "revision": "dc5c580438554fd0bdd5",
-    "url": "/myfailemtions/movieology-pwa/static/js/2.00e207a5.chunk.js"
+    "revision": "7ef0d66c8eb4b89088c0",
+    "url": "/myfailemtions/movieology-pwa/static/js/2.ead06e6b.chunk.js"
   },
   {
     "revision": "60bc45ccae0a30dcd1a1221fbca31d4c",
-    "url": "/myfailemtions/movieology-pwa/static/js/2.00e207a5.chunk.js.LICENSE"
+    "url": "/myfailemtions/movieology-pwa/static/js/2.ead06e6b.chunk.js.LICENSE"
   },
   {
     "revision": "4d403d36a4752d67c91a",
