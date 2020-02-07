@@ -1,0 +1,12 @@
+.welcome_panel {
+  background: #1e1b26;
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+  height: 100vh;
+  align-items: center;
+}
+
+.Button--ios {
+  border-radius: 24px;
+}

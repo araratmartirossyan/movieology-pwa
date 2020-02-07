@@ -1,0 +1,47 @@
+@import url('https://fonts.googleapis.com/css?family=Nunito:300,400,700,900&display=swap&subset=cyrillic');
+
+html,
+body {
+  font-family: 'Nunito', sans-serif;
+}
+
+.Header__content {
+  font-family: 'Nunito', sans-serif;
+  font-weight: 600 !important;
+  font-size: 1.4em !important;
+}
+
+.gray {
+  background: #f7f6f9;
+}
+
+.welcome_panel {
+  background: #1e1b26;
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+  height: 100vh;
+  align-items: center;
+}
+
+.Button--ios {
+  border-radius: 24px;
+}
+
+.Panel__in-before {
+  height: 0px;
+  margin-bottom: -1px;
+}
+
+.auth-block {
+  position: fixed;
+  bottom: 0;
+  margin: 0 auto;
+  left: 0;
+  right: 0;
+  display: flex;
+}
+
+.auth-block .Icon {
+  color: #fff;
+}
