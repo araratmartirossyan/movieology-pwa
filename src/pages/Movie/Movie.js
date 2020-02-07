@@ -7,6 +7,38 @@ import Icon28FavoriteOutline from "@vkontakte/icons/dist/28/favorite_outline";
 
 import "./Movie.css";
 
+const renderButtons = ({ isFavorite, onUnLike, onLike, _id, onMovieShare }) => (
+  <div className="mr-grid action-row">
+    <div className="col6 action-btn">
+      {!isFavorite ? (
+        <Icon16LikeOutline
+          width={30}
+          height={30}
+          style={{ color: "#fe4141" }}
+          onClick={() => onLike(_id)}
+        />
+      ) : (
+        <Icon16Like
+          width={30}
+          height={30}
+          style={{ color: "#fe4141" }}
+          onClick={() => onUnLike(_id)}
+        />
+      )}
+      ;
+    </div>
+
+    <div className="col6 action-btn">
+      <Icon24ShareExternal
+        width={30}
+        height={30}
+        style={{ color: "#fe4141" }}
+        onClick={() => onMovieShare(_id)}
+      />
+    </div>
+  </div>
+);
+
 const MovieView = ({
   movie: {
     Title,
@@ -26,6 +58,8 @@ const MovieView = ({
   onUnLike,
   onMovieShare
 }) => {
+  const userId = localStorage.getItem("userId");
+
   return (
     <div className="wrap">
       <div className="cellphone-container">
@@ -70,33 +104,15 @@ const MovieView = ({
                 <p className="movie-actors">{Actors.split("...")[0]}</p>
               </div>
             </div>
-            <div className="mr-grid action-row">
-              <div className="col6 action-btn">
-                {!isFavorite ? (
-                  <Icon16LikeOutline
-                    width={30}
-                    height={30}
-                    style={{ color: "#fe4141" }}
-                    onClick={() => onLike(_id)}
-                  />
-                ) : (
-                  <Icon16Like
-                    width={30}
-                    height={30}
-                    style={{ color: "#fe4141" }}
-                    onClick={() => onUnLike()}
-                  />
-                )}
-              </div>
-              <div className="col6 action-btn">
-                <Icon24ShareExternal
-                  width={30}
-                  height={30}
-                  style={{ color: "#fe4141" }}
-                  onClick={() => onMovieShare(_id)}
-                />
-              </div>
-            </div>
+            {userId &&
+              renderButtons({
+                isFavorite,
+                onLike,
+                onUnLike,
+                _id,
+                onMovieShare
+              })}
+
             <div className="back-btn">
               <Button size="xl" level="outline" onClick={goBack}>
                 Назад

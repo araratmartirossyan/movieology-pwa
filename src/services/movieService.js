@@ -56,7 +56,7 @@ export default class MovieService {
       localStorage.setItem("favId", id);
       return !isEmpty(fav);
     } catch (err) {
-      return err;
+      return false;
     }
   }
 

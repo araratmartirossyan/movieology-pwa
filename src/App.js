@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React from "react";
 import { View, Root, Panel, Button, Div } from "@vkontakte/vkui";
 import {
   handleLike,
@@ -13,7 +13,7 @@ import {
 } from "./utils/prefetchData";
 
 import { getObjectUrlString } from "./utils/urlParams";
-import Icon24LogoFacebook from "@vkontakte/icons/dist/24/logo_facebook";
+import Icon24LogoInstagram from "@vkontakte/icons/dist/24/logo_instagram";
 import Icon24LogoGoogle from "@vkontakte/icons/dist/24/logo_google";
 
 import Home from "./pages/Home/Home";
@@ -27,64 +27,38 @@ const authTypes = {
   fb: googleAuth
 };
 
-const App = () => {
-  const [state, setState] = useState({
+export default class App extends React.Component {
+  state = {
     isAuthorized: true,
-    user: {}
-  });
-  const [loaded, setLoaded] = useState({ loaded: false });
-  const [activeView, setActiveView] = useState("welcome");
-  const [movie, setMovie] = useState(null);
-
-  const handleFindMovie = async () => {
-    setLoaded({ loaded: false });
-    const movies = await fetchMovies();
-    const randomMovieId = Math.floor(Math.random() * movies.length);
-    const randomMovie = movies[randomMovieId];
-    const isFavorite = await checkIsFav(randomMovie._id);
-    setMovie({
-      ...randomMovie,
-      isFavorite
-    });
-    setTimeout(() => setLoaded({ loaded: true }), 1300);
-    setTimeout(() => setActiveView("movie"), 2000);
+    user: {},
+    loaded: false,
+    activeView: "welcome",
+    movie: {}
   };
 
-  const likeHandler = async (movieId = null) => {
-    if (movieId) {
-      await handleLike(movieId);
-    } else {
-      await handleUnLike();
-    }
-    setMovie({
-      ...movie,
-      isFavorite: movieId ? true : false
-    });
-  };
-
-  useEffect(() => {
+  async componentDidMount() {
     const { view = "welcome", movieId = null } = getObjectUrlString();
     const userId = localStorage.getItem("userId");
-    const prefetch = async () => {
-      if (userId) {
-        const user = await fetchUserProfile();
-        setState({ isAuthorized: true, user });
-      } else {
-        setState({ isAuthorized: false });
-      }
-    };
+
+    if (userId) {
+      const user = await fetchUserProfile();
+      this.setState({ isAuthorized: true, user });
+    } else {
+      this.setState({ isAuthorized: false });
+    }
 
     if (movieId) {
-      setActiveView(view);
-      setMovieOnInit(movieId);
+      this.setState({
+        activeView: view
+      });
+      this.setMovieOnInit(movieId);
     }
-    prefetch();
-  }, []);
+  }
 
-  const setMovieOnInit = async movieId => {
+  setMovieOnInit = async movieId => {
     try {
       const fetchedMovie = await handleFetchMovie(movieId);
-      setMovie({
+      this.setState({
         ...fetchedMovie
       });
     } catch (err) {
@@ -92,63 +66,97 @@ const App = () => {
     }
   };
 
-  const handleAuth = async type => {
+  handleAuth = async type => {
     try {
       const user = await authTypes[type]();
-      setState({ isAuthorized: true, user });
+      this.setState({ isAuthorized: true, user });
     } catch (err) {
       throw err;
     }
   };
 
-  return (
-    <Root activeView={activeView}>
-      <View header={false} activePanel="welcome_panel" id="welcome">
-        <Panel id="welcome_panel">
-          <Home onFindMovie={handleFindMovie} loaded={state.loaded} />
-          {!state.isAuthorized && (
-            <Div className="auth-block">
-              <Button
-                size="l"
-                stretched
-                aria-label="auth-button-instagram"
-                role="button"
-                mode="overlay_outline"
-                style={{ marginRight: 8 }}
-                onClick={() => handleAuth("fb")}
-              >
-                <Icon24LogoFacebook color="#fff" />
-              </Button>
-              <Button
-                size="l"
-                stretched
-                role="button"
-                aria-label="auth-button-google"
-                mode="overlay_outline"
-                onClick={() => handleAuth("google")}
-              >
-                <Icon24LogoGoogle />
-              </Button>
-            </Div>
-          )}
-        </Panel>
-      </View>
-      <View header={false} activePanel="movie_panel" id="movie">
-        <Panel id="movie_panel" style={{ backgroundColor: "#1e1b26" }}>
-          {movie && (
-            <MovieCard
-              movie={movie}
-              goBack={() => setActiveView("welcome")}
-              showImage={showImage}
-              onLike={likeHandler}
-              onUnLike={likeHandler}
-              onMovieShare={onMovieShare}
-            />
-          )}
-        </Panel>
-      </View>
-    </Root>
-  );
-};
+  handleFindMovie = async () => {
+    this.setState({ loaded: false });
+    const movies = await fetchMovies();
+    const randomMovieId = Math.floor(Math.random() * movies.length);
+    const randomMovie = movies[randomMovieId];
+    const isFavorite = this.state.isAuthorized
+      ? await checkIsFav(randomMovie._id)
+      : false;
+    this.setState({
+      movie: {
+        ...randomMovie,
+        isFavorite
+      }
+    });
+    setTimeout(() => this.setState({ loaded: true }), 1300);
+    setTimeout(() => this.setState({ activeView: "movie" }), 2000);
+  };
 
-export default App;
+  likeHandler = async (movieId = null) => {
+    if (movieId) {
+      await handleLike(movieId);
+    } else {
+      await handleUnLike();
+    }
+    const { movie } = this.state;
+    this.setState({
+      movie: {
+        ...movie,
+        isFavorite: movieId ? true : false
+      }
+    });
+  };
+
+  render() {
+    const { loaded, activeView, isAuthorized, movie } = this.state;
+    return (
+      <Root activeView={activeView}>
+        <View header={false} activePanel="welcome_panel" id="welcome">
+          <Panel id="welcome_panel">
+            <Home onFindMovie={this.handleFindMovie} loaded={loaded} />
+            {!isAuthorized && (
+              <Div className="auth-block">
+                <Button
+                  size="l"
+                  stretched
+                  aria-label="auth-button-instagram"
+                  role="button"
+                  mode="overlay_outline"
+                  style={{ marginRight: 8 }}
+                  onClick={() => this.handleAuth("fb")}
+                >
+                  <Icon24LogoInstagram color="#fff" />
+                </Button>
+                <Button
+                  size="l"
+                  stretched
+                  role="button"
+                  aria-label="auth-button-google"
+                  mode="overlay_outline"
+                  onClick={() => this.handleAuth("google")}
+                >
+                  <Icon24LogoGoogle />
+                </Button>
+              </Div>
+            )}
+          </Panel>
+        </View>
+        <View header={false} activePanel="movie_panel" id="movie">
+          <Panel id="movie_panel" style={{ backgroundColor: "#1e1b26" }}>
+            {movie && (
+              <MovieCard
+                movie={movie}
+                goBack={() => this.setState({ activeView: "welcome" })}
+                showImage={showImage}
+                onLike={this.likeHandler}
+                onUnLike={this.likeHandler}
+                onMovieShare={onMovieShare}
+              />
+            )}
+          </Panel>
+        </View>
+      </Root>
+    );
+  }
+}

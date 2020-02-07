@@ -17,7 +17,7 @@ const WhatToWatchButton = ({ onFindMovie, loaded }) => {
   return (
     <div className="movie-block">
       <div className="movie-button">
-        <a
+        <button
           className={cx({
             activate: true,
             loading: state.loading,
@@ -41,7 +41,7 @@ const WhatToWatchButton = ({ onFindMovie, loaded }) => {
             <li>Думаю</li>
             <li>Нашел</li>
           </ul>
-        </a>
+        </button>
 
         <svg xmlns="http://www.w3.org/2000/svg" style={{ display: "none" }}>
           <symbol
