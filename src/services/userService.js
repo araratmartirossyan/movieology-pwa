@@ -4,7 +4,7 @@ import "firebase/auth";
 
 const firebaseConfig = {
   apiKey: "AIzaSyACa906cLsAcOp6Wk8Jthp457--ietT9PI",
-  authDomain: "https//movieology.club",
+  authDomain: "movieology.club",
   databaseURL: "https://movieology-15eab.firebaseio.com",
   projectId: "movieology-15eab",
   storageBucket: "movieology-15eab.appspot.com",
