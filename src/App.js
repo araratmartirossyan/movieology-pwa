@@ -13,7 +13,6 @@ import {
 } from "./utils/prefetchData";
 
 import { getObjectUrlString } from "./utils/urlParams";
-import Icon24LogoInstagram from "@vkontakte/icons/dist/24/logo_instagram";
 import Icon24LogoGoogle from "@vkontakte/icons/dist/24/logo_google";
 
 import Home from "./pages/Home/Home";
@@ -108,6 +107,21 @@ export default class App extends React.Component {
     });
   };
 
+  renderAuthButton = () => (
+    <Div className="auth-block">
+      <Button
+        size="l"
+        stretched
+        role="button"
+        aria-label="auth-button-google"
+        mode="overlay_outline"
+        onClick={() => this.handleAuth("google")}
+      >
+        <Icon24LogoGoogle />
+      </Button>
+    </Div>
+  );
+
   render() {
     const { loaded, activeView, isAuthorized, movie } = this.state;
     return (
@@ -115,31 +129,7 @@ export default class App extends React.Component {
         <View header={false} activePanel="welcome_panel" id="welcome">
           <Panel id="welcome_panel">
             <Home onFindMovie={this.handleFindMovie} loaded={loaded} />
-            {!isAuthorized && (
-              <Div className="auth-block">
-                <Button
-                  size="l"
-                  stretched
-                  aria-label="auth-button-instagram"
-                  role="button"
-                  mode="overlay_outline"
-                  style={{ marginRight: 8 }}
-                  onClick={() => this.handleAuth("fb")}
-                >
-                  <Icon24LogoInstagram color="#fff" />
-                </Button>
-                <Button
-                  size="l"
-                  stretched
-                  role="button"
-                  aria-label="auth-button-google"
-                  mode="overlay_outline"
-                  onClick={() => this.handleAuth("google")}
-                >
-                  <Icon24LogoGoogle />
-                </Button>
-              </Div>
-            )}
+            {!isAuthorized && this.renderAuthButton()}
           </Panel>
         </View>
         <View header={false} activePanel="movie_panel" id="movie">
