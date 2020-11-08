@@ -4,7 +4,8 @@ const urls = {
   movies: "https://api.themoviedb.org",
   api: "https://movie.incodewetrust.dev",
   omdb: "https://www.omdbapi.com",
-  insta: "https://api.instagram.com"
+  insta: "https://api.instagram.com",
+  prediction: 'http://localhost:3000'
 };
 
 // http://www.omdbapi.com/?i=tt3896198&apikey=f5f111a3

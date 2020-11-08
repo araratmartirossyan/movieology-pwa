@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { View, Root, Panel, Button, Div } from "@vkontakte/vkui";
 import {
   handleLike,
@@ -23,91 +23,85 @@ import "./styles/global.css";
 
 const authTypes = {
   google: googleAuth,
-  fb: googleAuth
+  // fb: googleAuth
 };
 
-export default class App extends React.Component {
-  state = {
-    isAuthorized: true,
-    user: {},
-    loaded: false,
-    activeView: "welcome",
-    movie: {}
-  };
+const App = () => {
+  const [isAuthorized, setAuth] = useState(false)
+  const [user, setUser] = useState({})
+  const [movie, setMovie] = useState({})
+  const [loaded, setLoaded] = useState(false)
+  const [activeView, setActiveView] = useState('welcome')
 
-  async componentDidMount() {
-    const { view = "welcome", movieId = null } = getObjectUrlString();
-    const userId = localStorage.getItem("userId");
-
-    if (userId) {
-      const user = await fetchUserProfile();
-      this.setState({ isAuthorized: true, user });
-    } else {
-      this.setState({ isAuthorized: false });
-    }
-
-    if (movieId) {
-      this.setState({
-        activeView: view
-      });
-      this.setMovieOnInit(movieId);
-    }
-  }
-
-  setMovieOnInit = async movieId => {
+  const setMovieOnInit = async movieId => {
     try {
       const fetchedMovie = await handleFetchMovie(movieId);
-      this.setState({
-        ...fetchedMovie
-      });
+      setMovie(fetchedMovie)
     } catch (err) {
       throw err;
     }
   };
 
-  handleAuth = async type => {
+  const handleAuth = async type => {
     try {
       const user = await authTypes[type]();
-      this.setState({ isAuthorized: true, user });
+      setAuth(true)
+      setUser(user)
     } catch (err) {
       throw err;
     }
   };
 
-  handleFindMovie = async () => {
-    this.setState({ loaded: false });
+  const handleFindMovie = async () => {
+    setLoaded(false);
     const movies = await fetchMovies();
     const randomMovieId = Math.floor(Math.random() * movies.length);
     const randomMovie = movies[randomMovieId];
-    const isFavorite = this.state.isAuthorized
+
+    const isFavorite = isAuthorized
       ? await checkIsFav(randomMovie._id)
       : false;
-    this.setState({
-      movie: {
-        ...randomMovie,
-        isFavorite
-      }
-    });
-    setTimeout(() => this.setState({ loaded: true }), 1300);
-    setTimeout(() => this.setState({ activeView: "movie" }), 2000);
+    setMovie({
+      ...randomMovie,
+      isFavorite
+    })
+
+    setTimeout(() => setLoaded(true), 1300);
+    setTimeout(() => setActiveView('movie'), 2000);
   };
 
-  likeHandler = async (movieId = null) => {
+  const likeHandler = async (movieId = null) => {
     if (movieId) {
       await handleLike(movieId);
     } else {
       await handleUnLike();
     }
     const { movie } = this.state;
-    this.setState({
-      movie: {
-        ...movie,
-        isFavorite: movieId ? true : false
-      }
-    });
+    setMovie({
+      ...movie,
+      isFavorite: movieId ? true : false
+    })
   };
 
-  renderAuthButton = () => (
+
+  useEffect(() => {
+    const { view = "welcome", movieId = null } = getObjectUrlString();
+    const userId = localStorage.getItem("userId");
+
+    if (userId) {
+      fetchUserProfile().then(user => {
+        setAuth(true)
+        setUser(user)
+      });
+    }
+
+    if (movieId) {
+      setActiveView(view)
+      setMovieOnInit(movieId);
+    }
+  }, [])
+
+  const renderAuthButton = () => (
     <Div className="auth-block">
       <Button
         size="l"
@@ -115,38 +109,38 @@ export default class App extends React.Component {
         role="button"
         aria-label="auth-button-google"
         mode="overlay_outline"
-        onClick={() => this.handleAuth("google")}
+        onClick={() => handleAuth("google")}
       >
         <Icon24LogoGoogle />
       </Button>
     </Div>
   );
 
-  render() {
-    const { loaded, activeView, isAuthorized, movie } = this.state;
-    return (
-      <Root activeView={activeView}>
-        <View header={false} activePanel="welcome_panel" id="welcome">
-          <Panel id="welcome_panel">
-            <Home onFindMovie={this.handleFindMovie} loaded={loaded} />
-            {!isAuthorized && this.renderAuthButton()}
-          </Panel>
-        </View>
-        <View header={false} activePanel="movie_panel" id="movie">
-          <Panel id="movie_panel" style={{ backgroundColor: "#1e1b26" }}>
-            {movie && (
-              <MovieCard
-                movie={movie}
-                goBack={() => this.setState({ activeView: "welcome" })}
-                showImage={showImage}
-                onLike={this.likeHandler}
-                onUnLike={this.likeHandler}
-                onMovieShare={onMovieShare}
-              />
-            )}
-          </Panel>
-        </View>
-      </Root>
-    );
-  }
+  return (
+    <Root activeView={activeView}>
+      <View header={false} activePanel="welcome_panel" id="welcome">
+        <Panel id="welcome_panel">
+          <Home onFindMovie={handleFindMovie} loaded={loaded} />
+          {!isAuthorized && renderAuthButton()}
+        </Panel>
+      </View>
+      <View header={false} activePanel="movie_panel" id="movie">
+        <Panel id="movie_panel" style={{ backgroundColor: "#1e1b26" }}>
+          {movie && (
+            <MovieCard
+              movie={movie}
+              goBack={() => setActiveView('welcome')}
+              showImage={showImage}
+              onLike={likeHandler}
+              onUnLike={likeHandler}
+              onMovieShare={onMovieShare}
+            />
+          )}
+        </Panel>
+      </View>
+    </Root>
+  );
+
 }
+
+export default App
