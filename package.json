@@ -14,7 +14,7 @@
     "@vkontakte/vk-bridge": "^2.3.0",
     "@vkontakte/vk-connect": "^1.9.1",
     "@vkontakte/vkui": "^3.13.0",
-    "axios": "^0.21.0",
+    "axios": "^0.21.1",
     "classnames": "^2.2.6",
     "firebase": "^8.0.1",
     "invariant": "^2.2.4",
